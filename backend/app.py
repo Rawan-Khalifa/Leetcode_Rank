@@ -6,6 +6,7 @@ from firebase_admin import credentials, firestore
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime
 import logging
+import os
 
 # Load environment variables from .env
 load_dotenv()
@@ -16,12 +17,19 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
+# Ensure private key is formatted correctly
+private_key = os.getenv("FIREBASE_PRIVATE_KEY")
+
+# ✅ If private_key contains `\n`, it's stored correctly as a single line and needs conversion
+if "\\n" in private_key:
+    private_key = private_key.replace("\\n", "\n")
+
 # Firebase setup using environment variables
 cred = credentials.Certificate({
     "type": os.getenv("FIREBASE_TYPE"),
     "project_id": os.getenv("FIREBASE_PROJECT_ID"),
     "private_key_id": os.getenv("FIREBASE_PRIVATE_KEY_ID"),
-    "private_key": os.getenv("FIREBASE_PRIVATE_KEY").replace("\\n", "\n"),
+    "private_key": private_key,
     "client_email": os.getenv("FIREBASE_CLIENT_EMAIL"),
     "client_id": os.getenv("FIREBASE_CLIENT_ID"),
     "auth_uri": os.getenv("FIREBASE_AUTH_URI"),
@@ -33,6 +41,7 @@ cred = credentials.Certificate({
 
 firebase_admin.initialize_app(cred)
 db = firestore.client()
+
 
 # Function to fetch LeetCode rank
 def fetch_leetcode_rank():

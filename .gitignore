@@ -19,3 +19,5 @@ firebase_credentials.json
 # Environment variables
 .env
 
+venv/
+
