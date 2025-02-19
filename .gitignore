@@ -12,3 +12,10 @@ __pycache__/
 # IDEs
 .vscode/
 .idea/
+
+# Firebase credentials
+firebase_credentials.json
+
+# Environment variables
+.env
+
